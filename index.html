@@ -5,21 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Jersey+10&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sixtyfour+Convergence&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Jersey+10&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Signika+Negative:wght@300..700&family=Sixtyfour+Convergence&display=swap" rel="stylesheet">
     <title>My GitHub Page</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
+            font-family: "Signika Negative", serif;
+            text-align: center;
+            color: white;
             background-color: black;
-            color: #f5f5f5;
-            font-family: 'IBM Plex Mono', serif;
-            margin: 0;
-            padding: 0;
-}
+        }
+        .tooltip {
+            position: absolute;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .square {
+            stroke: black;
+            stroke-width: 2px;
+        }
     </style>
 </head>
 <body>
-    <h1>The GitHub Page of Robert A. Cooper</h1>
+    This webpage is currently under construction. 
 
-    Welcome to the new webpage of Robert A. Cooper 
+    <div class="tooltip" id="tooltip"></div>
+    <svg width="400" height="400"></svg>
+
+    <script>
+       /*  // Sample data - five groups with different counts
+        const groups = [
+            { name: "Group A", value: 20, color: "#F95738"},
+            { name: "Group B", value: 15, color: "#453F78" },
+            { name: "Group C", value: 10, color: "green" },
+            { name: "Group D", value: 25, color: "orange" },
+            { name: "Group E", value: 30, color: "purple" }
+        ];
+
+        const cols = 10;  // Number of columns in waffle grid
+        const size = 30;  // Square size
+        const gap = 4;    // Space between squares
+        const svg = d3.select("svg");
+        const tooltip = d3.select("#tooltip");
+
+        let totalCount = 0;
+        let waffleData = [];
+
+        // Prepare a waffle chart data structure
+        groups.forEach(group => {
+            for (let i = 0; i < group.value; i++) {
+                waffleData.push({ ...group, index: totalCount });
+                totalCount++;
+            }
+        });
+
+        // Create groups for each category
+        const groupContainer = svg.append("g");
+
+        // Compute group bounding boxes
+        const groupBounds = {};
+        waffleData.forEach((d, i) => {
+            const x = (i % cols) * (size + gap);
+            const y = Math.floor(i / cols) * (size + gap);
+
+            if (!groupBounds[d.name]) {
+                groupBounds[d.name] = { xMin: x, xMax: x, yMin: y, yMax: y };
+            } else {
+                groupBounds[d.name].xMin = Math.min(groupBounds[d.name].xMin, x);
+                groupBounds[d.name].xMax = Math.max(groupBounds[d.name].xMax, x);
+                groupBounds[d.name].yMin = Math.min(groupBounds[d.name].yMin, y);
+                groupBounds[d.name].yMax = Math.max(groupBounds[d.name].yMax, y);
+            }
+        });
+
+        // Add invisible hover areas for each group
+        Object.entries(groupBounds).forEach(([groupName, bounds]) => {
+            svg.append("rect")
+                .attr("x", bounds.xMin - gap / 2)
+                .attr("y", bounds.yMin - gap / 2)
+                .attr("width", bounds.xMax - bounds.xMin + size + gap)
+                .attr("height", bounds.yMax - bounds.yMin + size + gap)
+                .attr("fill", "transparent")
+                .on("mouseover", function () {
+                    tooltip.style("visibility", "visible")
+                        .text(`${groupName}: ${groups.find(g => g.name === groupName).value} units`);
+                })
+                .on("mousemove", function (event) {
+                    tooltip.style("top", `${event.pageY - 30}px`)
+                        .style("left", `${event.pageX + 10}px`);
+                })
+                .on("mouseout", function () {
+                    tooltip.style("visibility", "hidden");
+                });
+        });
+
+        // Draw squares with random starting positions
+
+        groupContainer.selectAll("rect.square")
+            .data(waffleData)
+            .enter()
+            .append("rect")
+            .attr("class", "square")
+            .attr("x", () => Math.random() * 400)  // Random starting X
+            .attr("y", () => Math.random() * 400)  // Random starting Y
+            .attr("width", size)
+            .attr("height", size)
+            .attr("fill", d => d.color)
+            .style("opacity", 0) // Can't see them at first!
+            .transition()
+            .delay((d, i) => i * 30)  // Let's stagger!
+            .duration(1500)  // Animation time
+            .ease(d3.easeBounce)  // Bouncy effect
+            //.ease(d3.easePoly.exponent(4))
+            .style("opacity", 1) // Fade in
+            .attr("x", (d, i) => (i % cols) * (size + gap))  // Move to correct X
+            .attr("y", (d, i) => Math.floor(i / cols) * (size + gap));  // Move to correct Y
+ */
+    </script>
 </body>
 </html>
