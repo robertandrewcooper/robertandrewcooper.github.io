@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Flag Visualization</title>
+    
+    <!-- Google Font Import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:opsz,wght@10..72,100..900&display=swap" rel="stylesheet">
+    
+    <!-- GSAP & Scrollama Libraries -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+
+     <!-- India State Files -->
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/in/in-all.js"></script>
+
+
+    <style>
+        body {
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            font-weight: 100;
+            font-style: normal;
+            margin: 0;
+            background: black;
+            margin: 0;
+        }
+
+        .title-wrapper {
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            top: 5vh;
+            width: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .title {
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            font-size: 75px;
+            font-weight: 800;
+            color: rgb(255, 0, 0);
+            text-align: center;
+        }
+
+        .flag-section {
+            width: 100vw;
+            height: calc(100vw * (400 / 600));
+            max-height: 150;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 25px; /* Added buffer */
+        }
+
+        .scrolly-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        .text-container {
+            width: 40%;
+            padding-right: 40px;
+        }
+
+        .text-boxes-section {
+            background: black;
+            padding: 100vh 0; /* Creates vertical scroll space before/after */
+        }
+
+        .text-box {
+            width: 60%;
+            margin: 0 auto;
+            margin-bottom: 100vh; /* Space between boxes */
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .text-box h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .text-box p {
+            font-size: 20px;
+        }
+
+        #chakra-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 1; 
+        }
+        .chakra-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px; /* Adjust size as needed */
+            height: 200px;
+            z-index: 2;
+            pointer-events: none; /* So clicks pass through */
+        }
+
+        .chakra-svg {
+            width: 100%;
+            height: auto;
+        }
+
+        #map-section {
+         background-color: black;
+        min-height: 100vh;
+         display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        }
+
+        #map-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .tooltip {
+            position: absolute;
+            background-color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 14px;
+            visibility: hidden;
+            pointer-events: none;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+
+
+        .map-title-wrapper {
+            position: absolute;
+            top: 30px;
+            width: 100%;
+            text-align: center;
+            z-index: 3;
+            color: white;
+            pointer-events: none;
+        }
+
+        .map-title {
+            font-size: 40px;
+            margin: 0;
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            color: red;
+        }
+
+        .map-subtitle {
+            font-size: 18px;
+            margin-top: 10px;
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            color: white;
+        }
+
+        #circle-pack-section {
+            background-color: black;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #circle-pack-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+        .circle-title {
+            font-size: 40px;
+            margin: 0;
+            padding-bottom: 50px;
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            color: red;
+        }
+
+
+        .tooltip {
+            position: absolute;
+            background-color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 14px;
+            visibility: hidden;
+            pointer-events: none;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        #bar-charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);  /* 2 columns */
+            gap: 40px;
+            justify-items: center;
+            padding: 40px;
+            background-color: grey;
+        }
+
+        .bar-chart-svg {
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            box-shadow: 0 0 10px white;
+        }
+        #india-line-chart-container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: black;
+            justify-content: center;
+
+        }
+
+        .line-chart-svg {
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: block;
+            margin: 0 auto;  /* Centers horizontally */
+        }
+
+        .chart-title {
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: #E80734;  /* Bright red */
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #india-state-map-section {
+            background-color: black;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #india-state-map-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 600px;
+            margin-top: 20px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            background-color: #1a1a1a;
+        }
+
+        #filter-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px auto;
+            flex-wrap: wrap;
+        }
+
+        #filter-controls label {
+            color: white;
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            font-size: 16px;
+        }
+
+        #filter-controls select {
+            background-color: black;
+            color: white;
+            border: 1px solid #E80734;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-family: 'Big Shoulders Stencil', sans-serif;
+        }
+        #resetFilters {
+            background-color: black;
+            color: #E80734;
+            border: 1px solid #E80734;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #resetFilters:hover {
+            background-color: #E80734;
+            color: white;
+        }
+
+        .story-section {
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 30vh;
+            padding: 50px 20px;
+        }
+
+        .story-container {
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .story-container h2 {
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            font-size: 36px;
+            color: red;
+            margin-bottom: 15px;
+        }
+
+        .story-container p {
+            font-size: 20px;
+            color: black;
+        }
+
+        .dramatic-intro h2 {
+            font-size: 48px;
+            font-weight: 800;
+            color: red;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .dramatic-intro p {
+            font-size: 24px;
+            line-height: 1.6;
+            color: black;
+        }
+
+        .dramatic-intro .highlight {
+            font-size: 26px;
+            font-weight: bold;
+            color: red;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .story-container .highlight {
+            font-weight: bold;
+            color: #E80734; /* Bright red */
+            font-size: 22px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .highlight-yellow {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .circle-pack-instruction {
+            font-family: 'Big Shoulders Stencil', sans-serif;
+            font-size: 20px;
+            color: red;
+            text-align: center;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="title-wrapper">
+        <div class="title">INDIA LEADS OUR WORLD IN INTERNET SHUTDOWNS</div>
+    </div>
+
+    <div class="flag-section">
+        <svg id="flag" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+            <!-- Indian Flag Colors -->
+            <rect width="600" height="133.33" fill="#FF9933"></rect>
+            <rect y="133.33" width="600" height="133.33" fill="white"></rect>
+            <rect y="266.66" width="600" height="133.33" fill="#138808"></rect>
+        </svg>
+    
+        <!-- Static Ashoka Chakra SVG Overlay -->
+        <div class="chakra-wrapper">
+            <img src="Ashoka_Chakra.svg" alt="Ashoka Chakra" class="chakra-svg" />
+        </div>
+    </div>
+
+    <section class="story-section">
+        <div class="story-container dramatic-intro">
+            <h2>Imagine waking up and the internet is just... gone.</h2>
+            <p>
+                No news. No messages. No business. <br><br>
+                For millions, this is not hypothetical — it's reality. Around the globe, internet shutdowns are becoming more frequent, cutting people off from the world and each other. <br><br>
+                <span class="highlight">What happens when a government controls the "off switch"?</span>
+            </p>
+        </div>
+    </section>
+    
+      
+    <!-- WORLD MAP SECTION -->
+    <section id="map-section">
+        <h2 class="map-title">Global Internet Shutdowns by Country (2016–2024)</h2>
+        <p class="map-subtitle">Explore how countries worldwide have restricted internet access — and how India leads the trend.</p>
+        <div id="map-container"></div>
+        <div class="tooltip" id="map-tooltip"></div>
+    </section>
+
+    <section class="story-section">
+        <div class="story-container">
+            <h2>Why Do Governments Shut Down the Internet?</h2>
+            <p>
+                From quelling protests to controlling the narrative, governments often flip the switch to the web under the guise of security or stability. <br><br>
+                But behind the scenes, shutdowns often <span class="highlight-yellow">silence dissent</span>, disrupt <span class="highlight-yellow">organizing</span>, and block access to <span class="highlight-yellow">critical information</span>.
+                <br><br>
+                In <span class="highlight-yellow">2024, Senegal cut mobile internet during mass protests</span> — officially for “public order,” but critics saw a move to <span class="highlight-yellow">suppress opposition and stifle free speech</span>.
+            </p>
+    
+            <!-- Instruction Line Here -->
+            <div class="circle-pack-instruction">
+                Hover over a circle to see more shutdown info.
+            </div>
+        </div>
+    </section>
+    
+    
+
+
+    <!-- CIRCLE PACKING SHUTDOWNS SECTION -->
+    <section id="circle-pack-section">
+        <div id="circle-pack-container"></div>
+    </section>
+    <div class="tooltip" id="circle-tooltip"></div>
+
+    
+    <section id="bar-chart-section">
+        <h2 class="chart-title">Top Causes of Internet Shutdowns by Year</h2>
+        <div id="bar-charts-container">
+            <!-- Bar charts will be appended here by JS -->
+        </div>
+    </section>    
+    <script src="bar_chart.js"></script>
+
+    <section class="story-section">
+        <div class="story-container">
+            <h2>India: The Global Leader in Internet Shutdowns</h2>
+            <p>
+                Since 2016, <span class="highlight-yellow">India has led the world in internet shutdowns</span> — more than any other nation by far. These disruptions have become a hallmark of digital control in the world’s largest democracy.
+                <br><br>
+                Under Prime Minister <span class="highlight-yellow">Narendra Modi</span>, the government has used shutdowns to manage protests, restrict information, and control political narratives, particularly in regions like <span class="highlight-yellow">Kashmir</span> and during mass demonstrations.
+                <br><br>
+                Critics argue this trend reflects a growing push toward <span class="highlight-yellow">authoritarian tactics</span> in digital governance, while officials claim shutdowns protect national security and public order.
+            </p>
+        </div>
+    </section>
+    
+
+    <section id="india-line-section">
+        <h2 class="chart-title">India's Internet Shutdowns Over Time</h2>
+        <div id="india-line-chart-container"></div>
+    </section>
+    <script src="india_line_chart.js"></script>
+
+    <section class="story-section">
+        <div class="story-container">
+            <h2>Jammu & Kashmir: The Epicenter of India’s Internet Blackouts</h2>
+            <p>
+                Within India, the region of <span class="highlight-yellow">Jammu and Kashmir</span> has experienced the **highest number of internet shutdowns by far** — often justified by security concerns.
+                <br><br>
+                Since the revocation of its special status in <span class="highlight-yellow">2019</span>, shutdowns have become a routine tool of control, frequently cutting off millions from communication, news, and essential services.
+                <br><br>
+                Critics argue these shutdowns <span class="highlight-yellow">limit freedoms and isolate communities</span>, while the government cites the need to maintain order in a region marked by tension.
+            </p>
+        </div>
+    </section>
+    
+
+    <div id="filter-controls">
+    <label for="yearDropdown">Select Year:</label>
+    <select id="yearDropdown">
+        <!-- Populated dynamically -->
+    </select>
+
+    <label for="causeDropdown">Select Cause:</label>
+    <select id="causeDropdown">
+        <!-- Populated dynamically -->
+    </select>
+
+    <button id="resetFilters">Reset Filters</button>
+</div>
+
+    
+    <section id="india-state-map-section">
+        <h2 class="chart-title">India’s Internet Shutdowns by State</h2>
+        <div id="india-state-map-container" style="height: 600px; width: 90%; margin: auto;"></div>
+    </section>
+    <script src="india_state_map.js"></script>
+
+    <section class="story-section">
+        <div class="story-container">
+            <h2>The Shutdowns We Don’t See</h2>
+            <p>
+                The numbers you’ve seen are based on **reported incidents** — but many shutdowns <span class="highlight-yellow">may never be recorded</span>.
+                <br><br>
+                Much of this data comes from <span class="highlight-yellow">crowdsourced reports</span>, user submissions, and word-of-mouth accounts. In places with limited media freedom or digital access, shutdowns can happen **without notice — and without record**.
+                <br><br>
+                The true scale of global internet shutdowns may be <span class="highlight-yellow">far greater than we know</span>, affecting more people, more often, than data can reveal.
+            </p>
+        </div>
+    </section>
+
+    <section class="story-section">
+        <div class="story-container">
+            <h2>About This Project</h2>
+            <p>
+                This data visualization was created by <span class="highlight-yellow">Ahron Springer</span> for Advanced Data Visualization final project.
+                <br><br>
+                Source: #AccessNow https://www.accessnow.org/ 
+            </p>
+        </div>
+    </section>
+    
+    
+
+    
+    
+
+
+    <script>
+        const mapWidth = 960, mapHeight = 600;
+        const mapSvg = d3.select("#map-container")
+            .append("svg")
+            .attr("width", mapWidth)
+            .attr("height", mapHeight);
+      
+        const projection = d3.geoMercator()
+            .scale(150)
+            .translate([mapWidth / 2, mapHeight / 1.5]);
+      
+        const path = d3.geoPath().projection(projection);
+      
+        const mapTooltip = d3.select("#map-tooltip");
+      
+        Promise.all([
+            d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"),
+            d3.csv("Internet_Shutdown_2016_2026.csv")
+        ]).then(([worldData, shutdownData]) => {
+            // Aggregate shutdowns by country
+            const shutdownCounts = {};
+            shutdownData.forEach(d => {
+                const country = d.country.trim();
+                shutdownCounts[country] = (shutdownCounts[country] || 0) + 1;
+            });
+      
+            // Create color scale
+            const colorScale = d3.scaleSequential(d3.interpolateReds)
+                .domain([0, d3.max(Object.values(shutdownCounts))]);
+      
+            // Draw countries
+            mapSvg.selectAll("path")
+                .data(worldData.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("fill", d => {
+                    const name = d.properties.name;
+                    const count = shutdownCounts[name] || 0;
+                    return count > 0 ? colorScale(count) : "#ccc";
+                })
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.3)
+                .on("mouseover", function(event, d) {
+                    const name = d.properties.name;
+                    const count = shutdownCounts[name] || 0;
+                    mapTooltip.style("visibility", "visible")
+                        .html(`<strong>${name}</strong><br>Shutdowns: ${count}`);
+                })
+                .on("mousemove", function(event) {
+                    mapTooltip.style("top", (event.pageY + 10) + "px")
+                              .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function() {
+                    mapTooltip.style("visibility", "hidden");
+                });
+        }).catch(error => console.error("Map error:", error));
+      </script>
+      
+  
+  
+
+      
+      <script src="circle_packing.js"></script>
+      <script>
+        gsap.registerPlugin(ScrollTrigger);
+    
+        gsap.utils.toArray('.story-container').forEach(container => {
+            gsap.to(container, {
+                scrollTrigger: {
+                    trigger: container,
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out"
+            });
+        });
+    </script>
+    
+    
+    
+
+    
+
+
+
+    </body>
+
+
+</html>
